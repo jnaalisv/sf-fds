@@ -1,12 +1,17 @@
 package com.github.jnaalisv.sf_fds.http;
 
+import com.github.jnaalisv.sf_fds.persistence.InMemoryTerminalRepository;
+import com.github.jnaalisv.sf_fds.services.Terminal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -18,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FraudDetectionControllerTests {
 
 	private static final String DETECT_FRAUDS_URL = "/api/v1/detect-frauds";
+	private static final Terminal terminal1 = new Terminal("TERM-001", "ES");
 
 	private static final String VALID_REQUEST = """
 			{
@@ -32,8 +38,13 @@ class FraudDetectionControllerTests {
 	@Autowired
 	private MockMvc mockMvc;
 
+	@Autowired
+	private InMemoryTerminalRepository terminalRepository;
+
 	@Test
 	void validRequestReturnsFraudDetectionResponse() throws Exception {
+		terminalRepository.add(terminal1);
+
 		mockMvc.perform(post(DETECT_FRAUDS_URL)
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON)
@@ -45,6 +56,32 @@ class FraudDetectionControllerTests {
 						  "status": "OK",
 						  "message": "OK",
 						  "fraudScore": 0
+						}
+						""", JsonCompareMode.STRICT));
+	}
+
+	@Test
+	void missingTerminalRequestReturnsFraudDetectionResponse() throws Exception {
+		terminalRepository.add(terminal1);
+
+		mockMvc.perform(post(DETECT_FRAUDS_URL)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON)
+						.content("""
+				{
+				  "amount": 125.50,
+				  "currency": "EUR",
+				  "terminalId": "TERM-002",
+				  "terminalThreatScore": 42,
+				  "cardNumber": "4111111111111111"
+				}"""))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andExpect(content().json("""
+						{
+						  "status": "DENIED",
+						  "message": "unknown terminal",
+						  "fraudScore": 99
 						}
 						""", JsonCompareMode.STRICT));
 	}
