@@ -4,5 +4,6 @@ import org.jspecify.annotations.Nullable;
 
 public interface TerminalRepository {
 
+    // TODO: candidate for caching
     @Nullable Terminal findById(String id);
 }

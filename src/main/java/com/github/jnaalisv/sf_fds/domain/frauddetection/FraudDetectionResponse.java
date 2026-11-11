@@ -5,7 +5,7 @@ public record FraudDetectionResponse(
         String message,
         int fraudScore) {
 
-    public FraudDetectionResponse {
-
+    public static FraudDetectionResponse denied(String message) {
+        return new FraudDetectionResponse("DENIED", message, 99);
     }
 }
