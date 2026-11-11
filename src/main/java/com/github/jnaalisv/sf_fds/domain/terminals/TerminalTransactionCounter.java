@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.InstantSource;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,9 +20,8 @@ public class TerminalTransactionCounter {
     }
 
     public int terminalTransactionsIn(String terminalId, FraudDetectionParameters fraudDetectionParameters) {
-        TerminalTimestamps terminalTimestamps = terminalTimestampsByTerminalId.computeIfAbsent(terminalId, k -> TerminalTimestamps.of(terminalId));
-        terminalTimestamps.registerTransaction(instantSource.instant(), fraudDetectionParameters.transactionLimitPerTerminal());
+        TerminalTimestamps terminalTimestamps = terminalTimestampsByTerminalId.computeIfAbsent(terminalId, k -> new TerminalTimestamps(new ArrayList<>()));
         Instant cutOff = instantSource.instant().minus(fraudDetectionParameters.transactionWindow());
-        return terminalTimestamps.transactionsSince(cutOff);
+        return terminalTimestamps.registerTxAndCountTxsSince(instantSource.instant(), fraudDetectionParameters.transactionLimitPerTerminal(), cutOff);
     }
 }

@@ -4,24 +4,20 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public record TerminalTimestamps(
-        String terminalId,
-        List<Instant> timestamps) {
+public class TerminalTimestamps {
 
-    public static TerminalTimestamps of(String terminalId) {
-        return new TerminalTimestamps(terminalId, new ArrayList<>());
+    private final List<Instant> timestamps;
+
+    public TerminalTimestamps(List<Instant> timestamps) {
+        this.timestamps =  timestamps;
     }
-
-    public synchronized void registerTransaction(Instant timestamp, int maxTimestamps) {
+    
+    public synchronized int registerTxAndCountTxsSince(Instant txTimestamp, int maxTimestamps, Instant cutOff) {
         if (timestamps.size() > maxTimestamps) {
             timestamps.removeFirst(); // to keep the list from growing infinitely
         }
-        timestamps.add(timestamp);
-    }
-
-    public synchronized int transactionsSince(Instant cutOff) {
+        timestamps.add(txTimestamp);
         timestamps.removeIf(t -> !t.isAfter(cutOff));
         return timestamps.size();
     }
-
 }
