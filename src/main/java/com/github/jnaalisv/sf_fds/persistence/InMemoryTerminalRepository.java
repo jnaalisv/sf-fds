@@ -3,18 +3,24 @@ package com.github.jnaalisv.sf_fds.persistence;
 import com.github.jnaalisv.sf_fds.domain.terminals.Terminal;
 import com.github.jnaalisv.sf_fds.domain.terminals.TerminalRepository;
 import org.jspecify.annotations.Nullable;
-import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Repository
 public class InMemoryTerminalRepository implements TerminalRepository {
 
     private final Map<String, Terminal> terminals = new ConcurrentHashMap<>();
 
-    public InMemoryTerminalRepository(Map<String, Terminal> terminals) {
-
+    public InMemoryTerminalRepository(Collection<Terminal> initialTerminals) {
+        for (Terminal terminal : initialTerminals) {
+            if (terminal.id() == null || terminal.id().isBlank()) {
+                throw new IllegalStateException("Terminal entry without an id");
+            }
+            if (terminals.putIfAbsent(terminal.id(), terminal) != null) {
+                throw new IllegalStateException("Terminal '" + terminal.id() + "' configured more than once");
+            }
+        }
     }
 
     public void add(Terminal terminal) {

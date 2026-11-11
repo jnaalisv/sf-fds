@@ -24,8 +24,10 @@ The app refuses to start if no keys are configured.
 curl -X POST localhost:8080/api/v1/detect-frauds \
   -H 'X-API-Key: local-dev-api-key-do-not-use-in-production' \
   -H 'Content-Type: application/json' \
-  -d '{"amount":125.50,"currency":"EUR","terminalId":"TERM-001","terminalThreatScore":42,"cardNumber":"4111111111111111"}'
+  -d '{"amount":125.50,"currency":"EUR","terminalId":"TERM-ES-001","terminalThreatScore":42,"cardNumber":"4111111111111111"}'
 ```
+
+`application.properties` also seeds three local terminals (`TERM-ES-001`, `TERM-FI-001`, `TERM-SE-001`) under `fds.terminals`. Any other terminal id gets `DENIED` / `unknown terminal`.
 
 ### Real environments
 
