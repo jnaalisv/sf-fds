@@ -1,9 +1,9 @@
 package com.github.jnaalisv.sf_fds.http;
 
 import com.github.jnaalisv.sf_fds.persistence.InMemoryTerminalRepository;
-import com.github.jnaalisv.sf_fds.services.FraudDetectionParameters;
-import com.github.jnaalisv.sf_fds.services.FraudDetectionParametersRepository;
-import com.github.jnaalisv.sf_fds.services.Terminal;
+import com.github.jnaalisv.sf_fds.domain.parameters.FraudDetectionParameters;
+import com.github.jnaalisv.sf_fds.domain.parameters.FraudDetectionParametersRepository;
+import com.github.jnaalisv.sf_fds.domain.terminals.Terminal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -19,7 +18,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.InstantSource;
-import java.util.Map;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

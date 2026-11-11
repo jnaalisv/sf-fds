@@ -1,9 +1,11 @@
-package com.github.jnaalisv.sf_fds.services;
+package com.github.jnaalisv.sf_fds.domain.frauddetection;
 
+import com.github.jnaalisv.sf_fds.domain.parameters.FraudDetectionParameters;
+import com.github.jnaalisv.sf_fds.domain.parameters.FraudDetectionParametersRepository;
+import com.github.jnaalisv.sf_fds.domain.terminals.Terminal;
+import com.github.jnaalisv.sf_fds.domain.terminals.TerminalRepository;
+import com.github.jnaalisv.sf_fds.domain.terminals.TerminalTransactionCounter;
 import org.springframework.stereotype.Service;
-
-import java.time.Clock;
-import java.time.Duration;
 
 @Service
 public class FraudDetectionService {

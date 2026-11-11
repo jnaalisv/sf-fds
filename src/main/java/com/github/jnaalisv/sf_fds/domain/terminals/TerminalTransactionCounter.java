@@ -1,9 +1,8 @@
-package com.github.jnaalisv.sf_fds.services;
+package com.github.jnaalisv.sf_fds.domain.terminals;
 
+import com.github.jnaalisv.sf_fds.domain.parameters.FraudDetectionParameters;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.InstantSource;
 import java.util.Map;

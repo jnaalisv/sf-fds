@@ -1,4 +1,4 @@
-package com.github.jnaalisv.sf_fds.services;
+package com.github.jnaalisv.sf_fds.domain.frauddetection;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

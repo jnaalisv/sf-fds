@@ -1,8 +1,8 @@
 package com.github.jnaalisv.sf_fds.http;
 
-import com.github.jnaalisv.sf_fds.services.FraudDetectionRequest;
-import com.github.jnaalisv.sf_fds.services.FraudDetectionResponse;
-import com.github.jnaalisv.sf_fds.services.FraudDetectionService;
+import com.github.jnaalisv.sf_fds.domain.frauddetection.FraudDetectionRequest;
+import com.github.jnaalisv.sf_fds.domain.frauddetection.FraudDetectionResponse;
+import com.github.jnaalisv.sf_fds.domain.frauddetection.FraudDetectionService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

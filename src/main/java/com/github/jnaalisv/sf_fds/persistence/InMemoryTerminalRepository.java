@@ -1,11 +1,10 @@
 package com.github.jnaalisv.sf_fds.persistence;
 
-import com.github.jnaalisv.sf_fds.services.Terminal;
-import com.github.jnaalisv.sf_fds.services.TerminalRepository;
+import com.github.jnaalisv.sf_fds.domain.terminals.Terminal;
+import com.github.jnaalisv.sf_fds.domain.terminals.TerminalRepository;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

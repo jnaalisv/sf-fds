@@ -1,4 +1,4 @@
-package com.github.jnaalisv.sf_fds.services;
+package com.github.jnaalisv.sf_fds.domain.terminals;
 
 import java.time.Instant;
 import java.util.ArrayList;
