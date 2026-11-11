@@ -7,6 +7,9 @@ import com.github.jnaalisv.sf_fds.domain.terminals.TerminalRepository;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+import java.util.stream.Stream;
+
 @Service
 public class FraudDetectionService {
 
@@ -32,13 +35,11 @@ public class FraudDetectionService {
     }
 
     FraudDetectionResponse runFraudDetections(FraudDetectionContext context, FraudDetector...fraudDetectors) {
-        for (FraudDetector fraudDetector : fraudDetectors) {
-            var response = fraudDetector.detectFraud(context);
-            if (response != null) {
-                return response;
-            }
-        }
-        return new FraudDetectionResponse("OK", "OK", 0);
+        return Stream.of(fraudDetectors)
+                .map(fraudDetector -> fraudDetector.detectFraud(context))
+                .filter(Objects::nonNull)
+                .findAny()
+                .orElse(new FraudDetectionResponse("OK", "OK", 0));
     }
 
     @FunctionalInterface
