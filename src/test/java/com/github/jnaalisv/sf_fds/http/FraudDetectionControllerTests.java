@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,6 +20,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.InstantSource;
 
+import static com.github.jnaalisv.sf_fds.http.TestApiKeys.validApiKey;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -27,6 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(properties = {
+		TestApiKeys.PROPERTIES_PAYMENTS_GATEWAY_CLIENT, TestApiKeys.PROPERTIES_PAYMENTS_GATEWAY_HASH,
+		TestApiKeys.PROPERTIES_CARD_ISSUER_CLIENT, TestApiKeys.PROPERTIES_CARD_ISSUER_HASH})
 class FraudDetectionControllerTests {
 
 	private static final String DETECT_FRAUDS_URL = "/api/v1/detect-frauds";
@@ -160,7 +165,7 @@ class FraudDetectionControllerTests {
 	}
 
 	private ResultActions detectFraudOn(Terminal terminal) throws Exception {
-		return mockMvc.perform(post(DETECT_FRAUDS_URL)
+		return mockMvc.perform(post(DETECT_FRAUDS_URL).with(validApiKey())
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)
 				.content("""
@@ -178,7 +183,7 @@ class FraudDetectionControllerTests {
 	void validRequestReturnsFraudDetectionResponse() throws Exception {
 		terminalRepository.add(terminal1);
 
-		mockMvc.perform(post(DETECT_FRAUDS_URL)
+		mockMvc.perform(post(DETECT_FRAUDS_URL).with(validApiKey())
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON)
 						.content(VALID_REQUEST))
@@ -197,7 +202,7 @@ class FraudDetectionControllerTests {
 	void missingTerminalRequestReturnsFraudDetectionResponse() throws Exception {
 		terminalRepository.add(terminal1);
 
-		mockMvc.perform(post(DETECT_FRAUDS_URL)
+		mockMvc.perform(post(DETECT_FRAUDS_URL).with(validApiKey())
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON)
 						.content("""
@@ -221,7 +226,7 @@ class FraudDetectionControllerTests {
 
 	@Test
 	void missingRequiredFieldIsRejected() throws Exception {
-		mockMvc.perform(post(DETECT_FRAUDS_URL)
+		mockMvc.perform(post(DETECT_FRAUDS_URL).with(validApiKey())
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("""
 								{
@@ -236,7 +241,7 @@ class FraudDetectionControllerTests {
 
 	@Test
 	void malformedJsonIsRejected() throws Exception {
-		mockMvc.perform(post(DETECT_FRAUDS_URL)
+		mockMvc.perform(post(DETECT_FRAUDS_URL).with(validApiKey())
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("{ \"amount\": "))
 				.andExpect(status().isBadRequest());
@@ -244,14 +249,14 @@ class FraudDetectionControllerTests {
 
 	@Test
 	void emptyBodyIsRejected() throws Exception {
-		mockMvc.perform(post(DETECT_FRAUDS_URL)
+		mockMvc.perform(post(DETECT_FRAUDS_URL).with(validApiKey())
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	void nonJsonContentTypeIsRejected() throws Exception {
-		mockMvc.perform(post(DETECT_FRAUDS_URL)
+		mockMvc.perform(post(DETECT_FRAUDS_URL).with(validApiKey())
 						.contentType(MediaType.TEXT_PLAIN)
 						.content(VALID_REQUEST))
 				.andExpect(status().isUnsupportedMediaType());
@@ -259,7 +264,7 @@ class FraudDetectionControllerTests {
 
 	@Test
 	void nonJsonAcceptHeaderIsRejected() throws Exception {
-		mockMvc.perform(post(DETECT_FRAUDS_URL)
+		mockMvc.perform(post(DETECT_FRAUDS_URL).with(validApiKey())
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_XML)
 						.content(VALID_REQUEST))
@@ -268,7 +273,7 @@ class FraudDetectionControllerTests {
 
 	@Test
 	void getIsNotAllowed() throws Exception {
-		mockMvc.perform(get(DETECT_FRAUDS_URL))
+		mockMvc.perform(get(DETECT_FRAUDS_URL).with(validApiKey()))
 				.andExpect(status().isMethodNotAllowed());
 	}
 }
